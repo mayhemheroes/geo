@@ -23,11 +23,50 @@ use approx::{AbsDiffEq, RelativeEq, UlpsEq};
 /// (for eg. not `f64::NAN`).
 ///
 /// [vector space]: //en.wikipedia.org/wiki/Vector_space
+///
+/// # Examples
+/// ```
+/// use geo_types::{Coordinate, coord};
+/// let coord1 = coord!(x: 1.0, y: 2.0);
+/// let coord2 = Coordinate::new_xy(x: 1.0, y: 2.0);
+/// assert_eq(coord1, coord2) ;
+/// ```
+#[repr(C)]
 #[derive(Eq, PartialEq, Clone, Copy, Debug, Hash, Default)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Coordinate<T: CoordNum> {
+    x: T,
+    y: T,
+}
+
+impl<T: CoordNum> Coordinate<T> {
+    pub fn new_xy(x: T, y: T) -> Self {
+        Self { x, y }
+    }
+}
+
+// Field Access
+use std::ops::{Deref, DerefMut};
+
+#[repr(C)]
+#[derive(Debug)]
+pub struct CoordXY<T: CoordNum> {
     pub x: T,
     pub y: T,
+}
+
+impl<T: CoordNum> Deref for Coordinate<T> {
+    type Target = CoordXY<T>;
+
+    fn deref(&self) -> &Self::Target {
+        unsafe { std::mem::transmute(self) }
+    }
+}
+
+impl<T: CoordNum> DerefMut for Coordinate<T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        unsafe { std::mem::transmute(self) }
+    }
 }
 
 impl<T: CoordNum> From<(T, T)> for Coordinate<T> {
