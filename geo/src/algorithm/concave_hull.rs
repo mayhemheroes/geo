@@ -6,7 +6,7 @@ use crate::utils::partial_min;
 use crate::{
     GeoFloat, Line, LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon,
 };
-use geo_types::{coord, CoordNum, Coordinate};
+use geo_types::{coord, Coord, CoordNum};
 use rstar::{RTree, RTreeNum};
 use std::collections::VecDeque;
 
@@ -66,7 +66,7 @@ where
 {
     type Scalar = T;
     fn concave_hull(&self, concavity: Self::Scalar) -> Polygon<Self::Scalar> {
-        let mut aggregated: Vec<Coordinate<Self::Scalar>> = self
+        let mut aggregated: Vec<Coord<Self::Scalar>> = self
             .0
             .iter()
             .flat_map(|elem| elem.exterior().0.clone())
@@ -91,8 +91,7 @@ where
 {
     type Scalar = T;
     fn concave_hull(&self, concavity: T) -> Polygon<T> {
-        let mut aggregated: Vec<Coordinate<T>> =
-            self.iter().flat_map(|elem| elem.0.clone()).collect();
+        let mut aggregated: Vec<Coord<T>> = self.iter().flat_map(|elem| elem.0.clone()).collect();
         Polygon::new(concave_hull(&mut aggregated, concavity), vec![])
     }
 }
@@ -103,19 +102,19 @@ where
 {
     type Scalar = T;
     fn concave_hull(&self, concavity: T) -> Polygon<T> {
-        let mut coordinates: Vec<Coordinate<T>> = self.iter().map(|point| point.0).collect();
+        let mut coordinates: Vec<Coord<T>> = self.iter().map(|point| point.0).collect();
         Polygon::new(concave_hull(&mut coordinates, concavity), vec![])
     }
 }
 
 fn find_point_closest_to_line<T>(
-    interior_coords_tree: &RTree<Coordinate<T>>,
+    interior_coords_tree: &RTree<Coord<T>>,
     line: Line<T>,
     max_dist: T,
     edge_length: T,
     concavity: T,
     line_tree: &RTree<Line<T>>,
-) -> Option<Coordinate<T>>
+) -> Option<Coord<T>>
 where
     T: GeoFloat + RTreeNum,
 {
@@ -191,7 +190,7 @@ where
 
 // This takes significant inspiration from:
 // https://github.com/mapbox/concaveman/blob/54838e1/index.js#L11
-fn concave_hull<T>(coords: &mut [Coordinate<T>], concavity: T) -> LineString<T>
+fn concave_hull<T>(coords: &mut [Coord<T>], concavity: T) -> LineString<T>
 where
     T: GeoFloat + RTreeNum,
 {
@@ -202,14 +201,14 @@ where
     }
 
     //Get points in overall dataset that aren't on the exterior linestring of the hull
-    let hull_tree: RTree<Coordinate<T>> = RTree::bulk_load(hull.clone().0);
+    let hull_tree: RTree<Coord<T>> = RTree::bulk_load(hull.clone().0);
 
-    let interior_coords: Vec<Coordinate<T>> = coords
+    let interior_coords: Vec<Coord<T>> = coords
         .iter()
         .filter(|coord| !hull_tree.contains(coord))
         .copied()
         .collect();
-    let mut interior_points_tree: RTree<Coordinate<T>> = RTree::bulk_load(interior_coords);
+    let mut interior_points_tree: RTree<Coord<T>> = RTree::bulk_load(interior_coords);
     let mut line_tree: RTree<Line<T>> = RTree::new();
 
     let mut concave_list: Vec<Point<T>> = vec![];
@@ -258,7 +257,7 @@ where
 mod test {
     use super::*;
     use crate::{line_string, polygon};
-    use geo_types::Coordinate;
+    use geo_types::Coord;
 
     #[test]
     fn triangle_test() {
@@ -393,12 +392,12 @@ mod test {
         ];
         let concave = linestring.concave_hull(2.0);
         let correct = vec![
-            Coordinate::from((4.0, 0.0)),
-            Coordinate::from((4.0, 4.0)),
-            Coordinate::from((3.0, 2.0)),
-            Coordinate::from((3.0, 1.0)),
-            Coordinate::from((0.0, 0.0)),
-            Coordinate::from((4.0, 0.0)),
+            Coord::from((4.0, 0.0)),
+            Coord::from((4.0, 4.0)),
+            Coord::from((3.0, 2.0)),
+            Coord::from((3.0, 1.0)),
+            Coord::from((0.0, 0.0)),
+            Coord::from((4.0, 0.0)),
         ];
         assert_eq!(concave.exterior().0, correct);
     }
@@ -416,12 +415,12 @@ mod test {
         ];
         let mls = MultiLineString::new(vec![v1, v2]);
         let correct = vec![
-            Coordinate::from((4.0, 0.0)),
-            Coordinate::from((4.0, 4.0)),
-            Coordinate::from((3.0, 2.0)),
-            Coordinate::from((3.0, 1.0)),
-            Coordinate::from((0.0, 0.0)),
-            Coordinate::from((4.0, 0.0)),
+            Coord::from((4.0, 0.0)),
+            Coord::from((4.0, 4.0)),
+            Coord::from((3.0, 2.0)),
+            Coord::from((3.0, 1.0)),
+            Coord::from((0.0, 0.0)),
+            Coord::from((4.0, 0.0)),
         ];
         let res = mls.concave_hull(2.0);
         assert_eq!(res.exterior().0, correct);
@@ -441,12 +440,12 @@ mod test {
         let multipolygon = MultiPolygon::new(vec![v1, v2]);
         let res = multipolygon.concave_hull(2.0);
         let correct = vec![
-            Coordinate::from((4.0, 0.0)),
-            Coordinate::from((4.0, 4.0)),
-            Coordinate::from((3.0, 2.0)),
-            Coordinate::from((3.0, 1.0)),
-            Coordinate::from((0.0, 0.0)),
-            Coordinate::from((4.0, 0.0)),
+            Coord::from((4.0, 0.0)),
+            Coord::from((4.0, 4.0)),
+            Coord::from((3.0, 2.0)),
+            Coord::from((3.0, 1.0)),
+            Coord::from((0.0, 0.0)),
+            Coord::from((4.0, 0.0)),
         ];
         assert_eq!(res.exterior().0, correct);
     }

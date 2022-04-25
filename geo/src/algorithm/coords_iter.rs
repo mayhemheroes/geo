@@ -1,18 +1,18 @@
 use std::fmt::Debug;
 
 use crate::{
-    coord, CoordNum, Coordinate, Geometry, GeometryCollection, Line, LineString, MultiLineString,
+    coord, Coord, CoordNum, Geometry, GeometryCollection, Line, LineString, MultiLineString,
     MultiPoint, MultiPolygon, Point, Polygon, Rect, Triangle,
 };
 
 use std::{fmt, iter, marker, slice};
 
-type CoordinateChainOnce<T> = iter::Chain<iter::Once<Coordinate<T>>, iter::Once<Coordinate<T>>>;
+type CoordinateChainOnce<T> = iter::Chain<iter::Once<Coord<T>>, iter::Once<Coord<T>>>;
 
 /// Iterate over geometry coordinates.
 pub trait CoordsIter<'a> {
-    type Iter: Iterator<Item = Coordinate<Self::Scalar>>;
-    type ExteriorIter: Iterator<Item = Coordinate<Self::Scalar>>;
+    type Iter: Iterator<Item = Coord<Self::Scalar>>;
+    type ExteriorIter: Iterator<Item = Coord<Self::Scalar>>;
     type Scalar: CoordNum;
 
     /// Iterate over all exterior and (if any) interior coordinates of a geometry.
@@ -98,7 +98,7 @@ pub trait CoordsIter<'a> {
 // └──────────────────────────┘
 
 impl<'a, T: CoordNum> CoordsIter<'a> for Point<T> {
-    type Iter = iter::Once<Coordinate<T>>;
+    type Iter = iter::Once<Coord<T>>;
     type ExteriorIter = Self::Iter;
     type Scalar = T;
 
@@ -121,7 +121,7 @@ impl<'a, T: CoordNum> CoordsIter<'a> for Point<T> {
 // └─────────────────────────┘
 
 impl<'a, T: CoordNum> CoordsIter<'a> for Line<T> {
-    type Iter = iter::Chain<iter::Once<Coordinate<T>>, iter::Once<Coordinate<T>>>;
+    type Iter = iter::Chain<iter::Once<Coord<T>>, iter::Once<Coord<T>>>;
     type ExteriorIter = Self::Iter;
     type Scalar = T;
 
@@ -143,7 +143,7 @@ impl<'a, T: CoordNum> CoordsIter<'a> for Line<T> {
 // │ Implementation for LineString │
 // └───────────────────────────────┘
 
-type LineStringIter<'a, T> = iter::Copied<slice::Iter<'a, Coordinate<T>>>;
+type LineStringIter<'a, T> = iter::Copied<slice::Iter<'a, Coord<T>>>;
 
 impl<'a, T: CoordNum + 'a> CoordsIter<'a> for LineString<T> {
     type Iter = LineStringIter<'a, T>;
@@ -277,8 +277,8 @@ impl<'a, T: CoordNum + 'a> CoordsIter<'a> for MultiPolygon<T> {
 // └───────────────────────────────────────┘
 
 impl<'a, T: CoordNum + 'a> CoordsIter<'a> for GeometryCollection<T> {
-    type Iter = Box<dyn Iterator<Item = Coordinate<T>> + 'a>;
-    type ExteriorIter = Box<dyn Iterator<Item = Coordinate<T>> + 'a>;
+    type Iter = Box<dyn Iterator<Item = Coord<T>> + 'a>;
+    type ExteriorIter = Box<dyn Iterator<Item = Coord<T>> + 'a>;
     type Scalar = T;
 
     fn coords_iter(&'a self) -> Self::Iter {
@@ -303,10 +303,8 @@ impl<'a, T: CoordNum + 'a> CoordsIter<'a> for GeometryCollection<T> {
 // │ Implementation for Rect │
 // └─────────────────────────┘
 
-type RectIter<T> = iter::Chain<
-    iter::Chain<CoordinateChainOnce<T>, iter::Once<Coordinate<T>>>,
-    iter::Once<Coordinate<T>>,
->;
+type RectIter<T> =
+    iter::Chain<iter::Chain<CoordinateChainOnce<T>, iter::Once<Coord<T>>>, iter::Once<Coord<T>>>;
 
 impl<'a, T: CoordNum + 'a> CoordsIter<'a> for Rect<T> {
     type Iter = RectIter<T>;
@@ -350,7 +348,7 @@ impl<'a, T: CoordNum + 'a> CoordsIter<'a> for Rect<T> {
 // └─────────────────────────────┘
 
 impl<'a, T: CoordNum + 'a> CoordsIter<'a> for Triangle<T> {
-    type Iter = iter::Chain<CoordinateChainOnce<T>, iter::Once<Coordinate<T>>>;
+    type Iter = iter::Chain<CoordinateChainOnce<T>, iter::Once<Coord<T>>>;
     type ExteriorIter = Self::Iter;
     type Scalar = T;
 
@@ -494,7 +492,7 @@ pub enum GeometryCoordsIter<'a, T: CoordNum + 'a> {
 }
 
 impl<'a, T: CoordNum> Iterator for GeometryCoordsIter<'a, T> {
-    type Item = Coordinate<T>;
+    type Item = Coord<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self {
@@ -567,7 +565,7 @@ pub enum GeometryExteriorCoordsIter<'a, T: CoordNum + 'a> {
 }
 
 impl<'a, T: CoordNum> Iterator for GeometryExteriorCoordsIter<'a, T> {
-    type Item = Coordinate<T>;
+    type Item = Coord<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self {
@@ -634,8 +632,8 @@ impl<'a, T: CoordNum + Debug> fmt::Debug for GeometryExteriorCoordsIter<'a, T> {
 mod test {
     use super::CoordsIter;
     use crate::{
-        coord, line_string, point, polygon, Coordinate, Geometry, GeometryCollection, Line,
-        LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon, Rect, Triangle,
+        coord, line_string, point, polygon, Coord, Geometry, GeometryCollection, Line, LineString,
+        MultiLineString, MultiPoint, MultiPolygon, Point, Polygon, Rect, Triangle,
     };
 
     #[test]
@@ -766,11 +764,11 @@ mod test {
         assert_eq!(expected_coords, actual_coords);
     }
 
-    fn create_point() -> (Point<f64>, Vec<Coordinate<f64>>) {
+    fn create_point() -> (Point<f64>, Vec<Coord<f64>>) {
         (point!(x: 1., y: 2.), vec![coord! { x: 1., y: 2. }])
     }
 
-    fn create_triangle() -> (Triangle<f64>, Vec<Coordinate<f64>>) {
+    fn create_triangle() -> (Triangle<f64>, Vec<Coord<f64>>) {
         (
             Triangle::new(
                 coord! { x: 1., y: 2. },
@@ -785,7 +783,7 @@ mod test {
         )
     }
 
-    fn create_rect() -> (Rect<f64>, Vec<Coordinate<f64>>) {
+    fn create_rect() -> (Rect<f64>, Vec<Coord<f64>>) {
         (
             Rect::new(coord! { x: 1., y: 2. }, coord! { x: 3., y: 4. }),
             vec![
@@ -797,7 +795,7 @@ mod test {
         )
     }
 
-    fn create_line_string() -> (LineString<f64>, Vec<Coordinate<f64>>) {
+    fn create_line_string() -> (LineString<f64>, Vec<Coord<f64>>) {
         (
             line_string![
                 (x: 1., y: 2.),
@@ -807,7 +805,7 @@ mod test {
         )
     }
 
-    fn create_polygon() -> (Polygon<f64>, Vec<Coordinate<f64>>) {
+    fn create_polygon() -> (Polygon<f64>, Vec<Coord<f64>>) {
         (
             polygon!(
                 exterior: [(x: 0., y: 0.), (x: 5., y: 10.), (x: 10., y: 0.), (x: 0., y: 0.)],

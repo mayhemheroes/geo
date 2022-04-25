@@ -4,8 +4,8 @@ use crate::algorithm::intersects::Intersects;
 use crate::algorithm::polygon_distance_fast_path::*;
 use crate::utils::{coord_pos_relative_to_ring, CoordPos};
 use crate::{
-    Coordinate, GeoFloat, GeoNum, Line, LineString, MultiLineString, MultiPoint, MultiPolygon,
-    Point, Polygon, Triangle,
+    Coord, GeoFloat, GeoNum, Line, LineString, MultiLineString, MultiPoint, MultiPolygon, Point,
+    Polygon, Triangle,
 };
 use num_traits::{float::FloatConst, Bounded, Float, Signed};
 
@@ -99,17 +99,17 @@ pub trait EuclideanDistance<T, Rhs = Self> {
 // │ Implementations for Coordinate │
 // └────────────────────────────────┘
 
-impl<T> EuclideanDistance<T, Coordinate<T>> for Coordinate<T>
+impl<T> EuclideanDistance<T, Coord<T>> for Coord<T>
 where
     T: GeoFloat,
 {
     /// Minimum distance between two `Coordinate`s
-    fn euclidean_distance(&self, c: &Coordinate<T>) -> T {
+    fn euclidean_distance(&self, c: &Coord<T>) -> T {
         Line::new(*self, *c).euclidean_length()
     }
 }
 
-impl<T> EuclideanDistance<T, Line<T>> for Coordinate<T>
+impl<T> EuclideanDistance<T, Line<T>> for Coord<T>
 where
     T: GeoFloat,
 {
@@ -243,12 +243,12 @@ where
 // │ Implementations for Line │
 // └──────────────────────────┘
 
-impl<T> EuclideanDistance<T, Coordinate<T>> for Line<T>
+impl<T> EuclideanDistance<T, Coord<T>> for Line<T>
 where
     T: GeoFloat,
 {
     /// Minimum distance from a `Line` to a `Coordinate`
-    fn euclidean_distance(&self, coord: &Coordinate<T>) -> T {
+    fn euclidean_distance(&self, coord: &Coord<T>) -> T {
         ::geo_types::private_utils::point_line_euclidean_distance(Point::from(*coord), *self)
     }
 }

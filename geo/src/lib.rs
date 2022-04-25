@@ -184,9 +184,8 @@ pub use crate::traits::ToGeo;
 pub use crate::types::Closest;
 
 pub use geo_types::{
-    coord, line_string, point, polygon, CoordFloat, CoordNum, Coordinate, Geometry,
-    GeometryCollection, Line, LineString, MultiLineString, MultiPoint, MultiPolygon, Point,
-    Polygon, Rect, Triangle,
+    coord, line_string, point, polygon, Coord, CoordFloat, CoordNum, Geometry, GeometryCollection,
+    Line, LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon, Rect, Triangle,
 };
 
 /// This module includes all the functions of geometric calculations
@@ -301,7 +300,7 @@ impl<T> GeoNum for T where T: CoordNum + algorithm::kernels::HasKernel {}
 
 #[cfg(test)]
 mod test {
-    use geo_types::{coord, Coordinate};
+    use geo_types::{coord, Coord};
 
     #[test]
     fn deprecate_field_wise_initializer() {
@@ -320,7 +319,7 @@ mod test {
         // produces no error or deprecation
         let macro_coord = coord!(x: 3, y: 4);
         // produces no error or deprecation
-        let modern_coord = Coordinate::new_xy(5, 6);
+        let modern_coord = Coord::new_xy(5, 6);
 
         // assert_eq!((legacy_coord + macro_coord).x, 4);
         // assert_eq!((legacy_coord + modern_coord).x, 6);

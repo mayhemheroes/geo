@@ -1,4 +1,4 @@
-use crate::{Coordinate, GeoNum, LineString, MultiLineString, MultiPoint, MultiPolygon, Polygon};
+use crate::{Coord, GeoNum, LineString, MultiLineString, MultiPoint, MultiPolygon, Polygon};
 
 /// Returns the convex hull of a Polygon. The hull is always oriented counter-clockwise.
 ///
@@ -108,7 +108,7 @@ pub use graham::graham_hull;
 // trivial case: input with at most 3 points. It ensures the
 // output is ccw, and does not repeat points unless
 // required.
-fn trivial_hull<T>(points: &mut [Coordinate<T>], include_on_hull: bool) -> LineString<T>
+fn trivial_hull<T>(points: &mut [Coord<T>], include_on_hull: bool) -> LineString<T>
 where
     T: GeoNum,
 {
@@ -116,7 +116,7 @@ where
 
     // Remove repeated points unless collinear points
     // are to be included.
-    let mut ls: Vec<Coordinate<T>> = points.to_vec();
+    let mut ls: Vec<Coord<T>> = points.to_vec();
     if !include_on_hull {
         ls.dedup();
     }

@@ -942,8 +942,8 @@ pub(crate) mod deprecated {
 mod test {
     use super::{MapCoords, MapCoordsInPlace};
     use crate::{
-        coord, polygon, Coordinate, Geometry, GeometryCollection, Line, LineString,
-        MultiLineString, MultiPoint, MultiPolygon, Point, Polygon, Rect,
+        coord, polygon, Coord, Geometry, GeometryCollection, Line, LineString, MultiLineString,
+        MultiPoint, MultiPolygon, Point, Polygon, Rect,
     };
 
     #[test]
@@ -1042,8 +1042,8 @@ mod test {
     fn linestring() {
         let line1: LineString<f32> = LineString::from(vec![(0., 0.), (1., 2.)]);
         let line2 = line1.map_coords(|(x, y)| (x + 10., y - 100.));
-        assert_relative_eq!(line2.0[0], Coordinate::from((10., -100.)), epsilon = 1e-6);
-        assert_relative_eq!(line2.0[1], Coordinate::from((11., -98.)), epsilon = 1e-6);
+        assert_relative_eq!(line2.0[0], Coord::from((10., -100.)), epsilon = 1e-6);
+        assert_relative_eq!(line2.0[1], Coord::from((11., -98.)), epsilon = 1e-6);
     }
 
     #[test]

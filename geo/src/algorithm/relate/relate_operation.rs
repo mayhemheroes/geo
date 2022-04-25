@@ -7,7 +7,7 @@ use crate::algorithm::relate::geomgraph::{
     CoordNode, CoordPos, Edge, EdgeEnd, EdgeEndBundleStar, GeometryGraph, LabeledEdgeEndBundleStar,
     RobustLineIntersector,
 };
-use crate::{Coordinate, GeoFloat, GeometryCow};
+use crate::{Coord, GeoFloat, GeometryCow};
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -38,7 +38,7 @@ where
     F: GeoFloat,
 {
     type Node = (CoordNode<F>, EdgeEndBundleStar<F>);
-    fn create_node(coordinate: Coordinate<F>) -> Self::Node {
+    fn create_node(coordinate: Coord<F>) -> Self::Node {
         (CoordNode::new(coordinate), EdgeEndBundleStar::new())
     }
 }

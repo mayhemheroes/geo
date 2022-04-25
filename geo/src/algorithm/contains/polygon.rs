@@ -1,18 +1,18 @@
 use super::Contains;
 use crate::relate::Relate;
 use crate::{
-    Coordinate, GeoFloat, GeoNum, GeometryCollection, Line, LineString, MultiLineString,
-    MultiPoint, MultiPolygon, Point, Polygon, Rect, Triangle,
+    Coord, GeoFloat, GeoNum, GeometryCollection, Line, LineString, MultiLineString, MultiPoint,
+    MultiPolygon, Point, Polygon, Rect, Triangle,
 };
 
 // ┌─────────────────────────────┐
 // │ Implementations for Polygon │
 // └─────────────────────────────┘
-impl<T> Contains<Coordinate<T>> for Polygon<T>
+impl<T> Contains<Coord<T>> for Polygon<T>
 where
     T: GeoNum,
 {
-    fn contains(&self, coord: &Coordinate<T>) -> bool {
+    fn contains(&self, coord: &Coord<T>) -> bool {
         use crate::algorithm::coordinate_position::{CoordPos, CoordinatePosition};
 
         self.coordinate_position(coord) == CoordPos::Inside
@@ -59,11 +59,11 @@ where
 // │ Implementations for MultiPolygon │
 // └──────────────────────────────────┘
 
-impl<T> Contains<Coordinate<T>> for MultiPolygon<T>
+impl<T> Contains<Coord<T>> for MultiPolygon<T>
 where
     T: GeoNum,
 {
-    fn contains(&self, coord: &Coordinate<T>) -> bool {
+    fn contains(&self, coord: &Coord<T>) -> bool {
         self.iter().any(|poly| poly.contains(coord))
     }
 }

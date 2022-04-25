@@ -333,7 +333,7 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{line_string, point, polygon, Coordinate, Point};
+    use crate::{line_string, point, polygon, Coord, Point};
     use approx::assert_relative_eq;
 
     #[test]
@@ -475,21 +475,21 @@ mod test {
         #[allow(deprecated)]
         let rotated = poly1.rotate(-15.0);
         let correct_outside = vec![
-            Coordinate::from((4.628808519201685, 1.180520783117658)),
-            Coordinate::from((3.921701738015137, 2.4052656545092472)),
-            Coordinate::from((4.180520783117657, 3.3711914807983154)),
-            Coordinate::from((5.405265654509247, 4.078298261984863)),
-            Coordinate::from((6.371191480798315, 3.8194792168823426)),
-            Coordinate::from((7.0782982619848624, 2.594734345490753)),
-            Coordinate::from((6.819479216882343, 1.628808519201685)),
-            Coordinate::from((5.594734345490753, 0.9217017380151373)),
-            Coordinate::from((4.628808519201685, 1.180520783117658)),
+            Coord::from((4.628808519201685, 1.180520783117658)),
+            Coord::from((3.921701738015137, 2.4052656545092472)),
+            Coord::from((4.180520783117657, 3.3711914807983154)),
+            Coord::from((5.405265654509247, 4.078298261984863)),
+            Coord::from((6.371191480798315, 3.8194792168823426)),
+            Coord::from((7.0782982619848624, 2.594734345490753)),
+            Coord::from((6.819479216882343, 1.628808519201685)),
+            Coord::from((5.594734345490753, 0.9217017380151373)),
+            Coord::from((4.628808519201685, 1.180520783117658)),
         ];
         let correct_inside = vec![
-            Coordinate::from((4.706454232732441, 1.4702985310043786)),
-            Coordinate::from((5.37059047744874, 2.017037086855466)),
-            Coordinate::from((5.672380059021509, 1.2114794859018578)),
-            Coordinate::from((4.706454232732441, 1.4702985310043786)),
+            Coord::from((4.706454232732441, 1.4702985310043786)),
+            Coord::from((5.37059047744874, 2.017037086855466)),
+            Coord::from((5.672380059021509, 1.2114794859018578)),
+            Coord::from((4.706454232732441, 1.4702985310043786)),
         ];
         assert_eq!(rotated.exterior().0, correct_outside);
         assert_eq!(rotated.interiors()[0].0, correct_inside);

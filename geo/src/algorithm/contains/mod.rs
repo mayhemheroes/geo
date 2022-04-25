@@ -52,9 +52,7 @@ mod triangle;
 mod test {
     use crate::algorithm::contains::Contains;
     use crate::line_string;
-    use crate::{
-        coord, Coordinate, Line, LineString, MultiPolygon, Point, Polygon, Rect, Triangle,
-    };
+    use crate::{coord, Coord, Line, LineString, MultiPolygon, Point, Polygon, Rect, Triangle};
 
     #[test]
     // see https://github.com/georust/geo/issues/452
@@ -501,13 +499,13 @@ mod test {
     #[test]
     // https://github.com/georust/geo/issues/473
     fn triangle_contains_collinear_points() {
-        let origin: Coordinate<f64> = (0., 0.).into();
+        let origin: Coord<f64> = (0., 0.).into();
         let tri = Triangle::new(origin, origin, origin);
         let pt: Point<f64> = (0., 1.23456).into();
         assert!(!tri.contains(&pt));
         let pt: Point<f64> = (0., 0.).into();
         assert!(!tri.contains(&pt));
-        let origin: Coordinate<f64> = (0., 0.).into();
+        let origin: Coord<f64> = (0., 0.).into();
         let tri = Triangle::new((1., 1.).into(), origin, origin);
         let pt: Point<f64> = (1., 1.).into();
         assert!(!tri.contains(&pt));

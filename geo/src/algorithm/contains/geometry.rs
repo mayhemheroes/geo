@@ -5,11 +5,11 @@ use crate::*;
 // │ Implementations for Geometry │
 // └──────────────────────────────┘
 
-impl<T> Contains<Coordinate<T>> for Geometry<T>
+impl<T> Contains<Coord<T>> for Geometry<T>
 where
     T: GeoNum,
 {
-    fn contains(&self, coord: &Coordinate<T>) -> bool {
+    fn contains(&self, coord: &Coord<T>) -> bool {
         self.contains(&Point::from(*coord))
     }
 }
@@ -27,11 +27,11 @@ where
 // │ Implementations for GeometryCollection │
 // └────────────────────────────────────────┘
 
-impl<T> Contains<Coordinate<T>> for GeometryCollection<T>
+impl<T> Contains<Coord<T>> for GeometryCollection<T>
 where
     T: GeoNum,
 {
-    fn contains(&self, coord: &Coordinate<T>) -> bool {
+    fn contains(&self, coord: &Coord<T>) -> bool {
         self.iter().any(|geometry| geometry.contains(coord))
     }
 }

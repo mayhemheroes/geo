@@ -56,7 +56,7 @@ macro_rules! point {
 #[macro_export]
 macro_rules! coord {
     (x: $x:expr, y: $y:expr $(,)* ) => {
-        $crate::Coordinate::new_xy($x, $y)
+        $crate::Coord::new_xy($x, $y)
     };
 }
 

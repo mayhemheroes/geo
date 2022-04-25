@@ -1,11 +1,11 @@
 use geo::algorithm::concave_hull::ConcaveHull;
 use geo::algorithm::convex_hull::ConvexHull;
-use geo::{Coordinate, Point};
+use geo::{Coord, Point};
 use geo_types::MultiPoint;
 use std::fs::File;
 use std::io::Write;
 
-fn generate_polygon_str(coords: &[Coordinate<f64>]) -> String {
+fn generate_polygon_str(coords: &[Coord<f64>]) -> String {
     let mut points_str = String::from("");
     for coord in coords {
         points_str.push_str(format!("{},{} ", coord.x, coord.y).as_ref());
@@ -16,7 +16,7 @@ fn generate_polygon_str(coords: &[Coordinate<f64>]) -> String {
     );
 }
 
-fn generate_consecutive_circles(coords: &[Coordinate<f64>]) -> String {
+fn generate_consecutive_circles(coords: &[Coord<f64>]) -> String {
     let mut circles_str = String::from("");
     for coord in coords {
         circles_str.push_str(
@@ -45,7 +45,7 @@ fn move_points_in_viewbox(width: f64, height: f64, points: Vec<Point<f64>>) -> V
     new_points
 }
 
-fn map_points_to_coords(points: Vec<Point<f64>>) -> Vec<Coordinate<f64>> {
+fn map_points_to_coords(points: Vec<Point<f64>>) -> Vec<Coord<f64>> {
     points.iter().map(|point| point.0).collect()
 }
 

@@ -84,7 +84,7 @@ pub trait CoordFloat: CoordNum + Float {}
 impl<T: CoordNum + Float> CoordFloat for T {}
 
 mod coordinate;
-pub use crate::coordinate::Coordinate;
+pub use crate::coordinate::Coord;
 
 mod point;
 pub use crate::point::Point;

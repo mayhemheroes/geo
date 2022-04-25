@@ -5,7 +5,7 @@ use include_dir::{include_dir, Dir, DirEntry};
 use log::{debug, info};
 
 use super::{input, Operation, Result};
-use geo::{intersects::Intersects, prelude::Contains, Coordinate, Geometry, LineString, Polygon};
+use geo::{intersects::Intersects, prelude::Contains, Coord, Geometry, LineString, Polygon};
 
 const GENERAL_TEST_XML: Dir = include_dir!("resources/testxml/general");
 
@@ -504,7 +504,7 @@ impl TestRunner {
 pub fn is_polygon_rotated_eq<T, F>(p1: &Polygon<T>, p2: &Polygon<T>, coord_matcher: F) -> bool
 where
     T: geo::GeoNum,
-    F: Fn(&Coordinate<T>, &Coordinate<T>) -> bool,
+    F: Fn(&Coord<T>, &Coord<T>) -> bool,
 {
     if p1.interiors().len() != p2.interiors().len() {
         return false;
@@ -531,7 +531,7 @@ where
 pub fn is_ring_rotated_eq<T, F>(r1: &LineString<T>, r2: &LineString<T>, coord_matcher: F) -> bool
 where
     T: geo::GeoNum,
-    F: Fn(&Coordinate<T>, &Coordinate<T>) -> bool,
+    F: Fn(&Coord<T>, &Coord<T>) -> bool,
 {
     assert!(r1.is_closed(), "r1 is not closed");
     assert!(r2.is_closed(), "r2 is not closed");

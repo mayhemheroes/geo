@@ -1,16 +1,16 @@
 use super::Contains;
 use crate::intersects::Intersects;
-use crate::{CoordNum, Coordinate, GeoNum, Line, LineString, MultiLineString, Point};
+use crate::{Coord, CoordNum, GeoNum, Line, LineString, MultiLineString, Point};
 
 // ┌────────────────────────────────┐
 // │ Implementations for LineString │
 // └────────────────────────────────┘
 
-impl<T> Contains<Coordinate<T>> for LineString<T>
+impl<T> Contains<Coord<T>> for LineString<T>
 where
     T: GeoNum,
 {
-    fn contains(&self, coord: &Coordinate<T>) -> bool {
+    fn contains(&self, coord: &Coord<T>) -> bool {
         if self.0.is_empty() {
             return false;
         }
