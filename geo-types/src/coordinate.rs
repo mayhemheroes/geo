@@ -39,6 +39,11 @@ pub struct Coord<T: CoordNum> {
     y: T,
 }
 
+#[deprecated(
+    note = "use new Coord struct with initializer: coord!(x: 1.0, y: 2.0) or Coord::new_xy(1.0, 2.0)"
+)]
+pub type Coordinate<T> = Coord<T>;
+
 impl<T: CoordNum> Coord<T> {
     pub fn new_xy(x: T, y: T) -> Self {
         Self { x, y }
