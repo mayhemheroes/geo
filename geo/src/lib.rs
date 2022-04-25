@@ -298,3 +298,35 @@ impl<T> GeoFloat for T where T: num_traits::Float + GeoNum {}
 
 pub trait GeoNum: CoordNum + algorithm::kernels::HasKernel {}
 impl<T> GeoNum for T where T: CoordNum + algorithm::kernels::HasKernel {}
+
+#[cfg(test)]
+mod test {
+    use geo_types::{coord, Coordinate};
+
+    #[test]
+    fn deprecate_field_wise_initializer() {
+        // This field wise initialization no longer compiles.
+        // let legacy_coord = Coordinate { x: 1, y: 2 };
+        //
+        // The error is:
+        // ```
+        // error[E0451]: field `x` of struct `geo_types::Coordinate` is private
+        //     --> geo/src/lib.rs:309:41
+        //     |
+        // let legacy_coord = Coordinate { x: 1, y: 2 };
+        //                                 ^^^^ private field
+        // ```
+
+        // produces no error or deprecation
+        let macro_coord = coord!(x: 3, y: 4);
+        // produces no error or deprecation
+        let modern_coord = Coordinate::new_xy(5, 6);
+
+        // assert_eq!((legacy_coord + macro_coord).x, 4);
+        // assert_eq!((legacy_coord + modern_coord).x, 6);
+
+        let result = macro_coord + modern_coord;
+        // field access produces no error or deprecation via Deref trait
+        assert_eq!(result.x, 8);
+    }
+}
