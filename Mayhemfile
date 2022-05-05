@@ -1,0 +1,6 @@
+project: geo-fuzz
+target: simplify
+
+cmds:
+ - cmd: /simplify
+
